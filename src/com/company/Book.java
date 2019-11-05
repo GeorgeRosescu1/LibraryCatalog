@@ -1,6 +1,6 @@
 package com.company;
 
-public class Book {
+public class Book implements Comparable {
     private int nrPages;
     private String nameBook;
     private double priceInEuros;
@@ -62,11 +62,16 @@ public class Book {
         return this.nameBook;
     }
 
-    public boolean compareBooks(Book secondBook) {
-        if (this.nameBook.equals(secondBook.nameBook) && this.authorName.equals(secondBook.authorName)) {
-            return true;
-        }
-        return false;
-
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof Book) {
+            if (((Book) o).getNameBook().compareTo(this.getNameBook()) < 0)
+                return -1;
+            else if (((Book) o).getNameBook().compareTo(this.getNameBook()) > 0)
+                return 1;
+            else return 0;
+        } else
+            System.err.print("Try to compare with object that is not of type Book!!");
+        return 2;
     }
 }
