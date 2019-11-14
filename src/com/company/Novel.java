@@ -1,5 +1,8 @@
 package com.company;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 public class Novel extends Book {
     private String type;
     private int yearOfApparition;
@@ -21,7 +24,11 @@ public class Novel extends Book {
     }
 
     public double getPrice() {
-        return super.getPrice() * 199.78;
+        double priceInDolars =  super.getPrice() * 1.0998; //Price in American Dolars
+        Double price = priceInDolars;
+        NumberFormat numberFormat = new DecimalFormat("#,##");
+        price  = Double.valueOf(numberFormat.format(price));
+        return price;
     }
 
 }

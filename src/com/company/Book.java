@@ -6,7 +6,6 @@ public class Book implements Comparable {
     private double priceInEuros;
     private String authorName;
     private int departmentToFound;
-    private int shelf;
 
     public int getDepartmentToFound() {
         return departmentToFound;
@@ -14,14 +13,6 @@ public class Book implements Comparable {
 
     public void setDepartmentToFound(int departmentToFound) {
         this.departmentToFound = departmentToFound;
-    }
-
-    public int getShelf() {
-        return shelf;
-    }
-
-    public void setShelf(int shelf) {
-        this.shelf = shelf;
     }
 
     public String getAuthorName() {

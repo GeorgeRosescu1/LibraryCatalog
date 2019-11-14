@@ -1,5 +1,8 @@
 package com.company;
 
+import com.company.util.Utils;
+import com.sun.source.tree.Tree;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
@@ -7,35 +10,44 @@ import java.util.*;
 
 //@todo add posibility to delete book --list all in order to choose the one to be removed
 //@todo when 0 of smth print "out of stock <that smth>"
-//@todo enter name, return department and shelf, like search book in library
+//@todo enter name, return department and shelf, like search book in library -- ask Cristi
 
 public class Main {
 
+    public static final double LIBRARY_FEE = 3.97;
+
     public static void main(String[] args) throws Exception {
 
-        List<Book> bookList = new ArrayList<>();
+        List<Book> bookList = new ArrayList<>();//to simplify the problem, this will be the 'online stock'
+        TreeMap<Integer, List<Book>> bookMap = new TreeMap<>();
+
         File file = new File("date.txt");
         String inputBufferString = new String(); /// read input here
         int myPos, counterApparitionBook;
-        int index;
-        String bookToFind;
+        int index, index1;
+        Integer key;
         String nameToDelete;
         String text = "Your data is up, choose one of the following operation:\n" +
                 "1. List all books.\n" +
                 "2. Delete one book.\n" +
-                "3. Search one book.\n" +
+                "3. Search book by department.\n" +
                 "4. See the cheapest book.\n" +
                 "5. See the most expensive book.\n" +
-                "6. Close the program.\n" +
+                "6. Buy book.\n" +
+                "7. See budget.\n" +
+                "8. Close the program.\n" +
                 "Enter the digit of the operation you want";
-        int chooseOperation = 1;
-        int previousOperation = -1;
+        int chooseOperation;
         boolean isRunning = true;
         double minPrice;
         double maxPrice;
-        boolean invalidOperation = false;
+        Double myBudget;
+        String bookToBuy;
         String nameOfChepestBook, nameOfExpensiveBook;
         Scanner input = new Scanner(System.in); // System Scanner
+        System.out.print("Enter your budget: ");
+        myBudget = input.nextDouble();
+        System.out.println();
 
         ///First we read all the data
         try {
@@ -43,68 +55,64 @@ public class Main {
             while (inputStream.hasNextLine()) {
                 String[] inputBufferArray;///read Magazine data
                 inputBufferString = inputStream.nextLine();
-                inputBufferArray = inputBufferString.split(", ");
-                myPos = 0;
-                switch (inputBufferArray[0]) {
-                    case "Magazine":
-                        Magazine myMagazine = new Magazine();
-                        myPos++;
-                        myMagazine.setNameBook(inputBufferArray[myPos]);///magazine title
-                        myPos++;
-                        myMagazine.setAuthorName(inputBufferArray[myPos]);///magazine author name
-                        myPos++;
-                        myMagazine.setNrPages(Integer.parseInt(inputBufferArray[myPos]));///magazine number of pages
-                        myPos++;
-                        myMagazine.setPriceInEuros(Double.parseDouble(inputBufferArray[myPos]));///magazine price in euros
-                        myPos++;
-                        myMagazine.setDepartmentToFound(Integer.parseInt(inputBufferArray[myPos]));///magazine department number
-                        myPos++;
-                        myMagazine.setShelf(Integer.parseInt(inputBufferArray[myPos]));///magazine shelf location number
-                        myPos++;
-                        myMagazine.setMagazinEdition(Integer.parseInt(inputBufferArray[myPos]));///magazine edition
-                        bookList.add(myMagazine);
-                        break;
-                    case "Novel":
-                        Novel myNovel = new Novel();
-                        myPos++;
-                        myNovel.setNameBook(inputBufferArray[myPos]);
-                        myPos++;
-                        myNovel.setAuthorName(inputBufferArray[myPos]);
-                        myPos++;
-                        myNovel.setNrPages(Integer.parseInt(inputBufferArray[myPos]));
-                        myPos++;
-                        myNovel.setYearOfApparition(Integer.parseInt(inputBufferArray[myPos]));
-                        myPos++;
-                        myNovel.setDepartmentToFound(Integer.parseInt(inputBufferArray[myPos]));
-                        myPos++;
-                        myNovel.setShelf(Integer.parseInt(inputBufferArray[myPos]));
-                        myPos++;
-                        myNovel.setPriceInEuros(Double.parseDouble(inputBufferArray[myPos]));
-                        myPos++;
-                        myNovel.setType(inputBufferArray[myPos]);
-                        bookList.add(myNovel);
-                        break;
-                    case "ArtCatalog":
-                        ArtCatalog myArtCatalog = new ArtCatalog();
-                        myPos++;
-                        myArtCatalog.setNameBook(inputBufferArray[myPos]);
-                        myPos++;
-                        myArtCatalog.setAuthorName(inputBufferArray[myPos]);
-                        myPos++;
-                        myArtCatalog.setNrPages(Integer.parseInt(inputBufferArray[myPos]));
-                        myPos++;
-                        myArtCatalog.setDepartmentToFound(Integer.parseInt(inputBufferArray[myPos]));
-                        myPos++;
-                        myArtCatalog.setShelf(Integer.parseInt(inputBufferArray[myPos]));
-                        myPos++;
-                        myArtCatalog.setPriceInEuros(Double.parseDouble(inputBufferArray[myPos]));
-                        myPos++;
-                        myArtCatalog.setPaperQuality(Double.parseDouble(inputBufferArray[myPos]));
-                        bookList.add(myArtCatalog);
-                        break;
-                    default:
-                        System.out.println("Invalid type!");
-                        break;
+                if (inputBufferString.startsWith("M") || inputBufferString.startsWith("A") || inputBufferString.startsWith("N")) {
+                    inputBufferArray = inputBufferString.split(", ");
+                    myPos = 0;
+                    switch (inputBufferArray[0]) {
+                        case "Magazine":
+                            Magazine myMagazine = new Magazine();
+                            myPos++;
+                            myMagazine.setNameBook(inputBufferArray[myPos]);///magazine title
+                            myPos++;
+                            myMagazine.setAuthorName(inputBufferArray[myPos]);///magazine author name
+                            myPos++;
+                            myMagazine.setNrPages(Integer.parseInt(inputBufferArray[myPos]));///magazine number of pages
+                            myPos++;
+                            myMagazine.setPriceInEuros(Double.parseDouble(inputBufferArray[myPos]));///magazine price in euros
+                            myPos++;
+                            myMagazine.setDepartmentToFound(Integer.parseInt(inputBufferArray[myPos]));///magazine department number
+                            myPos++;
+                            myMagazine.setMagazinEdition(Integer.parseInt(inputBufferArray[myPos]));///magazine edition
+                            bookList.add(myMagazine);
+                            break;
+                        case "Novel":
+                            Novel myNovel = new Novel();
+                            myPos++;
+                            myNovel.setNameBook(inputBufferArray[myPos]);
+                            myPos++;
+                            myNovel.setAuthorName(inputBufferArray[myPos]);
+                            myPos++;
+                            myNovel.setNrPages(Integer.parseInt(inputBufferArray[myPos]));
+                            myPos++;
+                            myNovel.setYearOfApparition(Integer.parseInt(inputBufferArray[myPos]));
+                            myPos++;
+                            myNovel.setDepartmentToFound(Integer.parseInt(inputBufferArray[myPos]));
+                            myPos++;
+                            myNovel.setPriceInEuros(Double.parseDouble(inputBufferArray[myPos]));
+                            myPos++;
+                            myNovel.setType(inputBufferArray[myPos]);
+                            bookList.add(myNovel);
+                            break;
+                        case "ArtCatalog":
+                            ArtCatalog myArtCatalog = new ArtCatalog();
+                            myPos++;
+                            myArtCatalog.setNameBook(inputBufferArray[myPos]);
+                            myPos++;
+                            myArtCatalog.setAuthorName(inputBufferArray[myPos]);
+                            myPos++;
+                            myArtCatalog.setNrPages(Integer.parseInt(inputBufferArray[myPos]));
+                            myPos++;
+                            myArtCatalog.setDepartmentToFound(Integer.parseInt(inputBufferArray[myPos]));
+                            myPos++;
+                            myArtCatalog.setPriceInEuros(Double.parseDouble(inputBufferArray[myPos]));
+                            myPos++;
+                            myArtCatalog.setPaperQuality(Double.parseDouble(inputBufferArray[myPos]));
+                            bookList.add(myArtCatalog);
+                            break;
+                        default:
+                            System.out.println("Invalid type!");
+                            break;
+                    }
                 }
             }
 
@@ -112,39 +120,35 @@ public class Main {
             System.out.println("Invalid input file!");
         }
 
-        ///Here we handle the data, no more reading of data till the next execution
-        while (isRunning) {
-            invalidOperation = false;
-            System.out.println(text);
+        index = 0;
+        while (index < bookList.size()) {
+            key = bookList.get(index).getDepartmentToFound();
+            if (!bookMap.containsKey(key)) {
+                List<Book> listInMap = new ArrayList<>();
+                listInMap.add(bookList.get(index));
+                if (index < bookList.size() - 1) {
+                    for (index1 = index + 1; index1 < bookList.size(); index1++) {
+                        if (bookList.get(index1).getDepartmentToFound() == key)
+                            listInMap.add(bookList.get(index1));
+                    }
+                }
+                Collections.sort(listInMap);
+                bookMap.put(key, listInMap);
+            }
+            index++;
+        }
 
-//            try {
-//                chooseOperation = input.nextInt();
-//            } catch (Exception e) {
-//                System.out.println("Invalid operation selected. Please enter a valid digit");
-//                invalidOperation = true;
-//            }
-//            if (invalidOperation)
-//                chooseOperation = 1;//by default
+
+        //Here we handle the data, no more reading of data until the next execution
+        while (isRunning) {
+            System.out.println(text);
             chooseOperation = input.nextInt();
             switch (chooseOperation) {
 
                 case 1:
                     ///List all the books;
-                    for (index = 0; index < bookList.size(); index++) {
-                        if (!(bookList.get(index) instanceof Magazine)) { //this object is not a Magazine
-                            if (bookList.get(index) instanceof ArtCatalog)
-                                System.out.println(bookList.get(index).getNameBook() + " written by " + bookList.get(index).getAuthorName() + //better to save that list item in a Book object? Helps memory?
-                                        " at " + bookList.get(index).getPrice() + " Euros.");
-                            else
-                                System.out.println(bookList.get(index).getNameBook() + " written " + bookList.get(index).getAuthorName() +
-                                        " at " + bookList.get(index).getPrice() + " Yuan renminbi.");
-                        } else {
-                            System.out.println(bookList.get(index).getNameBook() + " edition number " + ((Magazine) bookList.get(index)).getMagazinEdition() +
-                                    " at " + bookList.get(index).getPrice() + " Euros.");
-                        }
-                    }
+                    Utils.printBooksNice(bookList);
                     System.out.println('\n');
-                    previousOperation = 1;
                     break;
 
                 case 2:
@@ -168,17 +172,25 @@ public class Main {
                             System.out.println("This book is not in our list or you didn't wrote it properly, try again!\n");
                         else
                             System.out.println("Book " + nameToDelete + " has been deleted from our list.\n");
-                        previousOperation = 2;
                     }
                     break;
 
                 case 3:
-                    ///search book due to name//@todo implement this
-                    System.out.println("Enter the name of the book you want to find:");
-                    bookToFind = input.nextLine();
-                    System.out.println(bookToFind);
-                    // yet don't kno how to read this if string before, smth like wait() or smth
-                    previousOperation = 3;
+                    Set<Integer> departments = new HashSet<>();
+                    int depSelect;
+
+                    departments = bookMap.keySet();
+                    System.out.println("Please select one of the following departments: " + departments);
+                    depSelect = input.nextInt();
+                    if (!departments.contains(depSelect)) {
+                        System.out.println("This department doesn't exist");
+                    } else {
+                        System.out.println("Books to be foud in Department No." + depSelect + " are:");
+                        for (index = 0; index < bookMap.get(depSelect).size(); index++) {
+                            System.out.println(bookMap.get(depSelect).get(index).getNameBook() + " de " + bookMap.get(depSelect).get(index).getAuthorName());
+                        }
+                        System.out.println();
+                    }
                     break;
 
                 case 4:
@@ -191,8 +203,7 @@ public class Main {
                             nameOfChepestBook = bookList.get(index).getNameBook();
                         }
                     }
-                    System.out.println("The cheapest book is " + nameOfChepestBook + " at " + minPrice + " Yuan renminbi.\n");
-                    previousOperation = 4;
+                    System.out.println("The cheapest book is " + nameOfChepestBook + " at " + minPrice + " American Dolars.\n");
                     break;
 
                 case 5:
@@ -205,11 +216,37 @@ public class Main {
                             nameOfExpensiveBook = bookList.get(index).getNameBook();
                         }
                     }
-                    System.out.println("The most expensive book is " + nameOfExpensiveBook + " at " + maxPrice + " Yuan renminbi.\n");
-                    previousOperation = 5;
+                    System.out.println("The most expensive book is " + nameOfExpensiveBook + " at " + maxPrice + " American Dolars.\n");
                     break;
 
                 case 6:
+                    //bought book remove from online stock - arraylist named bookList
+                    Utils.printBooksNice(bookList);
+                    int position;
+                    //@TODO budget != 0 
+                    System.out.println("Choose the book you want to buy... Current budget = " + myBudget);
+                    input.nextLine();
+                    bookToBuy = input.nextLine();
+                    if (Utils.findBookInArray(bookList, bookToBuy) == -1) {
+                        System.out.println("We don't have this book in store");
+                    } else {
+                        position = Utils.findBookInArray(bookList, bookToBuy);
+                        if (bookList.get(position) instanceof Novel) {
+                            myBudget -= Utils.convertDolarsInEuros(bookList.get(position).getPrice());
+                            bookList.remove(position);
+                        } else {
+                            myBudget -= bookList.get(position).getPrice();
+                            bookList.remove(position);
+                        }
+                    }
+
+                    break;
+
+                case 7:
+                    System.out.println("Your budget = " + myBudget + " Euros.");
+                    break;
+
+                case 8:
                     isRunning = false;
                     System.out.println("Run the program again to start over!");
                     break;
