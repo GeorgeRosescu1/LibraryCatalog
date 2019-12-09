@@ -1,6 +1,7 @@
-package com.company;
+package model;
 
-public class Book implements Comparable {
+public class Book extends Entity implements Comparable {
+
     private int nrPages;
     private String nameBook;
     private double priceInEuros;
@@ -64,5 +65,22 @@ public class Book implements Comparable {
         } else
             System.err.print("Try to compare with object that is not of type Book!!");
         return 2;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) super.getId();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Book) {
+            Book book = (Book) obj;
+          //  if (this.getId() == book.getId())
+          //      return true;
+            if (this.getNameBook().equals(book.getNameBook()) && this.getAuthorName().equals(book.getAuthorName()))
+                return true;
+        }
+        return false;
     }
 }

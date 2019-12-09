@@ -1,4 +1,4 @@
-package com.company;
+package model;
 
 public class ArtCatalog extends Book {
     private double paperQuality;

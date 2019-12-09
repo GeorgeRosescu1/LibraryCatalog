@@ -1,4 +1,4 @@
-package com.company;
+package model;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

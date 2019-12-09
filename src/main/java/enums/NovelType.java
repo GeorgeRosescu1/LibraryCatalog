@@ -1,0 +1,9 @@
+package enums;
+
+public enum NovelType {
+
+    ROMAN_REALIST_MODERN, COMEDIE, NUVELA_REALISTA,
+    ROMAN_BALZACIAN, ROMAN_AL_EXPERIENTEI, ROMAN_MODERN_SUBIECTIV,
+    ROMAN_MODERN_OBIECTIV, Romanul_Experientei;
+
+}

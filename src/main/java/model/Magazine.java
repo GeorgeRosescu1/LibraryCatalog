@@ -1,13 +1,13 @@
-package com.company;
+package model;
 
 public class Magazine extends Book {
         private int magazinEdition;
 
-    public int getMagazinEdition() {
+    public int getMagazineEdition() {
         return magazinEdition;
     }
 
-    public void setMagazinEdition(int magazinEdition) {
+    public void setMagazineEdition(int magazinEdition) {
         this.magazinEdition = magazinEdition;
     }
 }

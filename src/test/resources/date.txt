@@ -1,0 +1,19 @@
+##$ This is a comment and will not be read, just to see the format of a line
+##$ Magazine: Type, Name, Author, NrPages, Price, Department, Edition
+##$ Novel: Type, Name, Author, NrPages, Year, Department, Price, TypeOfNovel
+##$ ArtCatalog: Type, Name, Author, NrPages, Dep, Price, PaperQuality
+-----------------------------------------------------------------------------
+Magazine, Gazeta Sporturilor, ProSport, 56, 5.4, 2, 16
+Novel, Moara cu Noroc, Ioan Slavici, 201, 1875, 2, 10.5, Nuvela Realista
+ArtCatalog, Atlasul Europei, Discovery, 42, 3, 3.1, 9.3
+Novel, Baltagul, Mihail Sadoveanu, 123, 1889, 1, 10.5, Roman Realist Traditional
+ArtCatalog, Atlasul Asiei, Discovery, 143, 3, 23.1, 7.56
+Novel, Enigma Otiliei, George Calinescu, 311, 1981, 1, 12, Roman Balzacian
+ArtCatalog, Viata la Polul Nord, GeograficX, 23, 3, 1.9, 5.3
+Magazine, Viata Satului, Romania Pitoreasca, 24, 6.8, 4, 3
+Magazine, Viata Satului, Romania Pitoreasca, 24, 6.8, 5, 2
+Novel, Maitreyi, Mircea Eliade, 278, 1921, 2, 0.5, Romanul Experientei
+Magazine, Viata Satului, Romania Pitoreasca, 24, 6.8, 4, 1
+Novel, Romanul Adolescentului Miop, Mircea Eliade, 208, 1916, 2, 10, Roman Modern
+Novel, Enigma Otiliei, George Calinescu, 311, 1934, 1, 10.5, Roman Balzacian
+Novel, Cel mai iubit dinre pamanteni, Marin Preda, 425, 1978, 13, 12.46, Roman Post-Modern
